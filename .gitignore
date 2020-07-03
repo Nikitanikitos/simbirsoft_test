@@ -2,4 +2,6 @@ venv/
 .idea/
 __pycache__/
 selenium/
+reports/
+.pytest_cache/
 settings.py

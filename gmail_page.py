@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from time import sleep
 
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-from selenium.webdriver.support.wait import WebDriverWait
-
 from base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.common.keys import Keys
+
+from settings import SURNAME, MAIL_RECIPIENT
 
 
 class GMailPage(BasePage):
@@ -29,7 +29,7 @@ class GMailPage(BasePage):
 		self.click_on_element(By.ID, 'passwordNext')
 		self.wait.until(ec.title_contains('Stack Overflow'))
 
-	def check_correct_ligin(self):
+	def check_correct_login(self):
 		"""
 		Проверка корректности авторизации
 		:return:
@@ -54,5 +54,14 @@ class GMailPage(BasePage):
 			self.wait.until(ec.title_contains('Вся почта'))
 		elif lang == "en":
 			self.wait.until(ec.title_contains('All Mail'))
-		amount_mail = self.find_elements(By.CLASS_NAME, 'ts')
+		amount_mail = self.get_elements(By.CLASS_NAME, 'ts')
 		return int(amount_mail[5].text)
+
+	def send_mail(self, amount_mail):
+		self.go_to_site('https://mail.google.com/mail/u/0/#inbox?compose=new')
+		letter_subject = f"Тестовое задание. {SURNAME}"
+		letter = f"На данной почте всего {amount_mail} писем"
+		self.input_data(By.NAME, 'to', MAIL_RECIPIENT)
+		self.input_data(By.NAME, 'subjectbox', letter_subject)
+		self.input_data(By.ID, ':pz', letter)
+		# self.click_on_element(By.ID, ':oh')

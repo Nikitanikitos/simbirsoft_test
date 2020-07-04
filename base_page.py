@@ -36,9 +36,18 @@ class BasePage:
 	def get_page_source(self):
 		return self.driver.page_source
 
+	def get_lang_site(self):
+		page_source = self.driver.page_source
+		lang = page_source[12:14]
+		return lang
+
 	def get_title(self):
 		return self.driver.title
 
 	def find_elements(self, by: str, elements: str) -> list:
 		list_elements = self.wait.until(ec.presence_of_all_elements_located((by, elements)))
 		return list_elements
+
+	def find_element(self, by: str, element: str):
+		result_element = self.wait.until(ec.visibility_of_element_located((by, element)))
+		return result_element

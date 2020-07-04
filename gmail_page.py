@@ -10,7 +10,6 @@ from selenium.webdriver.support import expected_conditions as ec
 
 
 class GMailPage(BasePage):
-	amount_mail_dict = {'inbox': 0, 'starred': 0, 'deferred': 0, 'sent': 0, 'drafts': 0}
 	"""
 	Класс для страницы gmail, который содержит основные функции для тестов
 	"""
@@ -31,17 +30,21 @@ class GMailPage(BasePage):
 		self.wait.until(ec.title_contains('Stack Overflow'))
 
 	def check_correct_ligin(self):
+		check_list = None
 		self.go_to_site('https://www.google.com/gmail/')
-		page_source = self.get_page_source()
-		return page_source
+		lang = self.get_lang_site()
+		if lang == "ru":
+			check_list = ['Входящие', 'Отправленные']
+		elif lang == "en":
+			check_list = ['Inbox', 'Sent']
+		return check_list
 
 	def get_amount_mail(self) -> int:
-		wait = WebDriverWait(self.driver, 2)
 		self.go_to_site(f'https://mail.google.com/mail/u/0/#all')
-		while True:
-			try:
-				wait.until(ec.visibility_of_element_located((By.CLASS_NAME, 'v1')))
-			except TimeoutException:
-				break
+		lang = self.get_lang_site()
+		if lang == "ru":
+			self.wait.until(ec.title_contains('Вся почта'))
+		elif lang == "en":
+			self.wait.until(ec.title_contains('All Mail'))
 		amount_mail = self.find_elements(By.CLASS_NAME, 'ts')
 		return int(amount_mail[5].text)

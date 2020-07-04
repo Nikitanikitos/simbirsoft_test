@@ -15,37 +15,30 @@ from selenium import webdriver
 class GoogleTest(unittest.TestCase):
 	mail = settings.EMAIL_FOR_LOG_IN
 	password = settings.PASSWORD_FOR_LOG_IN
+	cookies = None
 
 	def setUp(self) -> None:
-		self.site = GMailPage(webdriver.Chrome)
+		self.site = GMailPage()
 
-	@allure.testcase('Login test')
-	def test_login_google(self):
+	@allure.title("Проверка логирования")
+	def test_send_mail(self):
+		expected_amount_mail = settings.EXPECTED_AMOUNT_MAIL
 		"""
-		Первый тест.
-		Тестируем логирование на сайте google.com/gmail/ через "временный" сайт stackoverflow.com.
-		Если на странице есть разделы "Входящие" И "Отправленные" - тест пройдет успешно
 		:return:
 		"""
-		with pytest.allure.step():
-			self.site.go_to_site(
-				'https://stackoverflow.com/users/signup?ssrc=head&returnurl=%2fusers%2fstory%2fcurrent%27')
-		self.site.login(GoogleTest.mail, GoogleTest.password)
-		sleep(2)
-		self.site.go_to_site('https://www.google.com/gmail/')
-		page_source = self.site.get_page_source()
-		self.assertIn('Входящие', page_source)
-		self.assertIn('Отправленные', page_source)
-		self.assertTrue('Gmail' in self.site.get_title())
+		with allure.step("Авторизация на сайте google.com/gmail/"):
+			self.site.login(GoogleTest.mail, GoogleTest.password)
+		with allure.step("Проверка корректности авторизации"):
+			page_source = self.site.check_correct_ligin()
+			self.assertIn('Входящие', page_source)
+			self.assertIn('Отправленные', page_source)
+			self.assertTrue('Gmail' in self.site.get_title())
+		with allure.step("Получение колличества писем"):
+			amount_mail = self.site.get_amount_mail()
+			if expected_amount_mail:
+				self.assertEqual(expected_amount_mail, amount_mail)
+			self.assertEqual(type(amount_mail), int)
 
-	def test_count_mail(self):
-		"""
-		Второй тест.
-		Тестируем правильность получения данных о колличестве письмах на почте.
-		Если известно ожидаемое значение - внесите его в переменную setting.EXPECTED_AMOUNT_MAIL
-		:return:
-		"""
-		pass
 
 	def tearDown(self):
 		self.site.close_site()

@@ -15,7 +15,7 @@ class GMailPage(BasePage):
 	"""
 	def login(self, mail: str, password: str):
 		"""
-		Функция, котороая логинится на "временном" сайте (в данном случае) stackoverflow.com
+		Авторизация на stackoverflow через аккаут google
 		:param mail:
 		:param password:
 		:return:
@@ -30,6 +30,10 @@ class GMailPage(BasePage):
 		self.wait.until(ec.title_contains('Stack Overflow'))
 
 	def check_correct_ligin(self):
+		"""
+		Проверка корректности авторизации
+		:return:
+		"""
 		check_list = None
 		self.go_to_site('https://www.google.com/gmail/')
 		lang = self.get_lang_site()
@@ -40,6 +44,10 @@ class GMailPage(BasePage):
 		return check_list
 
 	def get_amount_mail(self) -> int:
+		"""
+		Получение колличества писем
+		:return: amount_mail
+		"""
 		self.go_to_site(f'https://mail.google.com/mail/u/0/#all')
 		lang = self.get_lang_site()
 		if lang == "ru":

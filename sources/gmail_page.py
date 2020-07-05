@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from base_page import BasePage
+from sources.base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from settings import SURNAME, MAIL_RECIPIENT
+from sources.settings import SURNAME, MAIL_RECIPIENT
 
 
 class GMailPage(BasePage):

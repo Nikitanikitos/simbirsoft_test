@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
-from time import sleep
-
 from base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from selenium.webdriver.common.keys import Keys
 
 from settings import SURNAME, MAIL_RECIPIENT
 
 
 class GMailPage(BasePage):
+	lang = "en"
 	"""
-	Класс для страницы gmail, который содержит основные функции для тестов
+	Gmail page class
 	"""
 	def login(self, mail: str, password: str):
 		"""
-		Авторизация на stackoverflow через аккаут google
+		Authorization on stackoverflow through google account
 		:param mail:
 		:param password:
 		:return:
@@ -31,37 +29,50 @@ class GMailPage(BasePage):
 
 	def check_correct_login(self):
 		"""
-		Проверка корректности авторизации
+		Verification of authorization
 		:return:
 		"""
-		check_list = None
-		self.go_to_site('https://www.google.com/gmail/')
-		lang = self.get_lang_site()
-		if lang == "ru":
+		check_list = ['Inbox', 'Sent']
+		self.go_to_site('https://mail.google.com/mail/u/0/#inbox')
+		GMailPage.lang = self.get_lang_site()
+		if GMailPage.lang == "ru":
 			check_list = ['Входящие', 'Отправленные']
-		elif lang == "en":
-			check_list = ['Inbox', 'Sent']
 		return check_list
 
 	def get_amount_mail(self) -> int:
 		"""
-		Получение колличества писем
+		Determination of the number of mails
 		:return: amount_mail
 		"""
 		self.go_to_site(f'https://mail.google.com/mail/u/0/#all')
-		lang = self.get_lang_site()
-		if lang == "ru":
+		if GMailPage.lang == "ru":
 			self.wait.until(ec.title_contains('Вся почта'))
-		elif lang == "en":
+		elif GMailPage.lang == "en":
 			self.wait.until(ec.title_contains('All Mail'))
 		amount_mail = self.get_elements(By.CLASS_NAME, 'ts')
 		return int(amount_mail[5].text)
 
 	def send_mail(self, amount_mail):
-		self.go_to_site('https://mail.google.com/mail/u/0/#inbox?compose=new')
+		"""
+		Writing and sending mail
+		:param amount_mail:
+		:return:
+		"""
+		self.go_to_site('https://mail.google.com/mail/u/0/h/vn7jwxec9om4/?&cs=b&pv=tl&v=b')
 		letter_subject = f"Тестовое задание. {SURNAME}"
-		letter = f"На данной почте всего {amount_mail} писем"
+		letter = self.compose_a_letter(amount_mail)
 		self.input_data(By.NAME, 'to', MAIL_RECIPIENT)
-		self.input_data(By.NAME, 'subjectbox', letter_subject)
-		self.input_data(By.ID, ':pz', letter)
-		# self.click_on_element(By.ID, ':oh')
+		self.input_data(By.NAME, 'subject', letter_subject)
+		self.input_data(By.NAME, 'body', letter)
+		# self.click_on_element(By.NAME, 'nvp_bu_send')
+
+	@staticmethod
+	def compose_a_letter(amount_mail):
+		letter = f"На данной почте всего {amount_mail} "
+		if amount_mail == 1:
+			letter.join('письмо')
+		elif 2 <= amount_mail >= 4:
+			letter.join('письма')
+		else:
+			letter.join('писем')
+		return letter

@@ -49,11 +49,11 @@ class GMailTest(unittest.TestCase):
 		:return:
 		"""
 		check_list = self.window.check_correct_login()
-		page_source = self.window.get_page_source()
+		page_source = self.window.driver.page_source
 		if check_list:
 			for check_item in check_list:
 				self.assertIn(check_item, page_source)
-		self.assertTrue('Gmail' in self.window.get_title())
+		self.assertTrue('Gmail' in self.window.driver.title)
 
 	@allure.step("Determination of the number of mails")
 	def determine_number_of_mails(self) -> int:
@@ -86,6 +86,7 @@ if __name__ == "__main__":
 	if len(sys.argv) == 3:
 		BasePage.capabilities['browserName'] = sys.argv[1]
 		BasePage.capabilities['platform'] = sys.argv[2]
-		del sys.argv[2]
-		del sys.argv[1]
-	unittest.main()
+		for q in range(2):
+			sys.argv.pop()
+	GMailTest.run()
+	# unittest.main()

@@ -1,9 +1,10 @@
-venv/
-.idea/
+.pytest_cache/
 __pycache__/
 selenium/
+command/
 results/
-.pytest_cache/
+.idea/
+venv/
 settings.py
 second_var_test.py
-command
+geckodriver.log

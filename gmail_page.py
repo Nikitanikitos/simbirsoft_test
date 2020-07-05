@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-from time import sleep
-
-from selenium.webdriver.common.keys import Keys
-
 from base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -30,7 +26,7 @@ class GMailPage(BasePage):
 		self.press_enter(mail_element)
 		password_element = self.enter_data(By.NAME, 'password', password)
 		self.press_enter(password_element)
-		self.wait.until(ec.url_contains('stackoverflow'))
+		self.waiting_desired_url('stackoverflow')
 
 	def check_correct_login(self) -> tuple:
 		"""
@@ -39,7 +35,7 @@ class GMailPage(BasePage):
 		"""
 		check_list = ('Inbox', 'Sent')
 		self.go_to_site('https://mail.google.com/mail/u/0/#inbox')
-		self.wait.until(ec.url_contains('inbox'))
+		self.waiting_desired_url('inbox')
 		GMailPage.lang = self.get_lang_site()
 		if GMailPage.lang == "ru":
 			check_list = ('Входящие', 'Отправленные')
@@ -51,7 +47,7 @@ class GMailPage(BasePage):
 		:return: amount_mail
 		"""
 		self.go_to_site(f'https://mail.google.com/mail/u/0/#all')
-		self.wait.until(ec.url_contains('#all'))
+		self.waiting_desired_url('all')
 		if GMailPage.lang == "ru":
 			self.wait.until(ec.title_contains('Вся почта'))
 		elif GMailPage.lang == "en":
@@ -73,8 +69,7 @@ class GMailPage(BasePage):
 		self.enter_data(By.NAME, 'body', mail)
 		# self.click_on_element(By.NAME, 'nvp_bu_send')
 
-	@staticmethod
-	def compose_mail(number_of_mails: int) -> str:
+	def compose_mail(self, number_of_mails: int) -> str:
 		letter = f"На данной почте всего {number_of_mails} "
 		if number_of_mails == 1:
 			letter.join('письмо')
@@ -85,7 +80,7 @@ class GMailPage(BasePage):
 		return letter
 
 	def get_lang_site(self) -> str:
-		page_source = self.get_page_source()
+		page_source = self.driver.page_source
 		index = page_source.find('lang') + 6
 		lang = page_source[index:index + 2]
 		return lang

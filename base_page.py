@@ -13,8 +13,8 @@ class BasePage:
 	capabilities = {"browserName": "chrome", "platform": "linux"}
 
 	def __init__(self):
-		# self.driver = webdriver.Remote(desired_capabilities=BasePage.capabilities)
-		self.driver = webdriver.Chrome()
+		self.driver = webdriver.Remote(desired_capabilities=BasePage.capabilities)
+		# self.driver = webdriver.Firefox()
 		self.wait = WebDriverWait(self.driver, 15)
 
 	def go_to_site(self, url):
@@ -35,11 +35,8 @@ class BasePage:
 	def press_enter(self, element):
 		element.send_keys(Keys.ENTER)
 
-	def get_page_source(self):
-		return self.driver.page_source
-
-	def get_title(self) -> str:
-		return self.driver.title
+	def waiting_desired_url(self, url_part):
+		self.wait.until(ec.url_contains(url_part))
 
 	def get_list_elements(self, by: str, value: str) -> list:
 		list_elements = self.wait.until(ec.presence_of_all_elements_located((by, value)))

@@ -7,14 +7,14 @@ from selenium.webdriver.support import expected_conditions as ec
 
 class BasePage:
 	"""
-	Base page class
+	Базовой класс страницы
 	"""
 	capabilities = {"browserName": "chrome", "platform": "linux"}
 
 	def __init__(self):
-		self.driver = webdriver.Remote(desired_capabilities=BasePage.capabilities)
-		# self.driver = webdriver.Firefox()
-		self.wait = WebDriverWait(self.driver, 15)
+		# self.driver = webdriver.Remote(desired_capabilities=BasePage.capabilities)
+		self.driver = webdriver.Firefox()
+		self.wait = WebDriverWait(self.driver, 20)
 
 	def go_to_site(self, url):
 		self.driver.get(url)

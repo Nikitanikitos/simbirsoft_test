@@ -7,13 +7,13 @@ from settings import SURNAME, MAIL_RECIPIENT
 
 class GMailPage(BasePage):
 	"""
-	Gmail page class
+	Класс Gmail страницы
 	"""
 	lang = "en"
 
 	def login(self, mail: str, password: str):
 		"""
-		Authorization on stackoverflow through google account
+		Авторизация в google аккаунт через stackoverflow
 		:param mail:
 		:param password:
 		:return:
@@ -29,7 +29,7 @@ class GMailPage(BasePage):
 
 	def check_correct_login(self) -> tuple:
 		"""
-		Verification of authorization
+		Функция возвращает tuple для проверки корректности авторизации
 		:return:
 		"""
 		check_list = ('Inbox', 'Sent')
@@ -42,7 +42,7 @@ class GMailPage(BasePage):
 
 	def determine_number_of_mails(self) -> int:
 		"""
-		Determination of the number of mails
+		Функция определяет колличество писем на почте
 		:return: amount_mail
 		"""
 		self.go_to_site(f'https://mail.google.com/mail/u/0/#all')
@@ -56,7 +56,7 @@ class GMailPage(BasePage):
 
 	def send_mail(self, number_of_mails: int):
 		"""
-		Writing and sending mail
+		Составление письма и его отправка
 		:param number_of_mails:
 		:return:
 		"""

@@ -28,9 +28,9 @@ class BasePage:
 		self.driver.close()
 
 	def enter_data(self, by, path: str, data: str):
-		input = self.wait.until(ec.visibility_of_element_located((by, path)))
-		input.send_keys(data)
-		return input
+		enter = self.wait.until(ec.visibility_of_element_located((by, path)))
+		enter.send_keys(data)
+		return enter
 
 	def press_enter(self, element):
 		element.send_keys(Keys.ENTER)

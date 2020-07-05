@@ -1,3 +1,6 @@
-EMAIL_FOR_LOG_IN = set value
-PASSWORD_FOR_LOG_IN = set value
+EMAIL_FOR_LOG_IN = "add value"
+PASSWORD_FOR_LOG_IN = "add value"
 EXPECTED_AMOUNT_MAIL = None
+CAPABILITIES = {"browserName": "chrome", "platform": "linux"}
+SURNAME = "add value"
+MAIL_RECIPIENT = "add value"

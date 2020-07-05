@@ -7,10 +7,11 @@ from settings import SURNAME, MAIL_RECIPIENT
 
 
 class GMailPage(BasePage):
-	lang = "en"
 	"""
 	Gmail page class
 	"""
+	lang = "en"
+
 	def login(self, mail: str, password: str):
 		"""
 		Authorization on stackoverflow through google account
@@ -21,25 +22,25 @@ class GMailPage(BasePage):
 		self.go_to_site(
 			'https://stackoverflow.com/users/signup?ssrc=head&returnurl=%2fusers%2fstory%2fcurrent%27')
 		self.click_on_element(By.CLASS_NAME, 's-btn__google')
-		self.input_data(By.NAME, 'identifier', mail)
+		self.enter_data(By.NAME, 'identifier', mail)
 		self.click_on_element(By.ID, 'identifierNext')
-		self.input_data(By.NAME, 'password', password)
+		self.enter_data(By.NAME, 'password', password)
 		self.click_on_element(By.ID, 'passwordNext')
 		self.wait.until(ec.title_contains('Stack Overflow'))
 
-	def check_correct_login(self):
+	def check_correct_login(self) -> tuple:
 		"""
 		Verification of authorization
 		:return:
 		"""
-		check_list = ['Inbox', 'Sent']
+		check_list = ('Inbox', 'Sent')
 		self.go_to_site('https://mail.google.com/mail/u/0/#inbox')
 		GMailPage.lang = self.get_lang_site()
 		if GMailPage.lang == "ru":
-			check_list = ['Входящие', 'Отправленные']
+			check_list = ('Входящие', 'Отправленные')
 		return check_list
 
-	def get_amount_mail(self) -> int:
+	def determine_number_of_mails(self) -> int:
 		"""
 		Determination of the number of mails
 		:return: amount_mail
@@ -49,29 +50,29 @@ class GMailPage(BasePage):
 			self.wait.until(ec.title_contains('Вся почта'))
 		elif GMailPage.lang == "en":
 			self.wait.until(ec.title_contains('All Mail'))
-		amount_mail = self.get_elements(By.CLASS_NAME, 'ts')
-		return int(amount_mail[5].text)
+		number_of_mails = self.get_list_elements(By.CLASS_NAME, 'ts')[5].text
+		return int(number_of_mails)
 
-	def send_mail(self, amount_mail):
+	def send_mail(self, number_of_mails: int):
 		"""
 		Writing and sending mail
-		:param amount_mail:
+		:param number_of_mails:
 		:return:
 		"""
 		self.go_to_site('https://mail.google.com/mail/u/0/h/vn7jwxec9om4/?&cs=b&pv=tl&v=b')
-		letter_subject = f"Тестовое задание. {SURNAME}"
-		letter = self.compose_a_letter(amount_mail)
-		self.input_data(By.NAME, 'to', MAIL_RECIPIENT)
-		self.input_data(By.NAME, 'subject', letter_subject)
-		self.input_data(By.NAME, 'body', letter)
+		mail_subject = f"Тестовое задание. {SURNAME}"
+		mail = self.compose_mail(number_of_mails)
+		self.enter_data(By.NAME, 'to', MAIL_RECIPIENT)
+		self.enter_data(By.NAME, 'subject', mail_subject)
+		self.enter_data(By.NAME, 'body', mail)
 		# self.click_on_element(By.NAME, 'nvp_bu_send')
 
 	@staticmethod
-	def compose_a_letter(amount_mail):
-		letter = f"На данной почте всего {amount_mail} "
-		if amount_mail == 1:
+	def compose_mail(number_of_mails: int) -> str:
+		letter = f"На данной почте всего {number_of_mails} "
+		if number_of_mails == 1:
 			letter.join('письмо')
-		elif 2 <= amount_mail >= 4:
+		elif 2 <= number_of_mails >= 4:
 			letter.join('письма')
 		else:
 			letter.join('писем')

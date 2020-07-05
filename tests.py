@@ -5,40 +5,41 @@ try:
 except ImportError:
 	exit("Do copy settings.py.default in settings.py and set values")
 
-import sys
 import allure
-import unittest
 from gmail_page import GMailPage
-from base_page import BasePage
+import unittest
 
 
-class SendMailTest(unittest.TestCase):
+class GMailTest(unittest.TestCase):
+	"""
+	Test for counting the number of mails and sending mail with this data
+	"""
 
+	@allure.step("Webdriver initialization")
 	def setUp(self):
-		with allure.step("Webdriver initialization"):
-			self.window = GMailPage()
+		self.window = GMailPage()
 
-	@allure.testcase("Determination of the numbers of mails, writing and sending mail")
+	@allure.testcase("Determination of the number of mails, writing and sending mail")
 	def test_write_and_send_mail(self):
 		"""
 		The test determines the number of mails and writes and sends mail
 		:return:
 		"""
 		self.gmail_authorization()
-		self.check_correct_authorization()
-		amount_mail = self.determine_numbers_mails()
+		self.check_authorization()
+		amount_mail = self.determine_number_of_mails()
 		self.write_and_send_mail(amount_mail)
 
 	@allure.step("Gmail authorization")
 	def gmail_authorization(self):
 		"""
-		Authorization on stackoverflow through google account,
+		Authorization on stackoverflow through google account
 		:return:
 		"""
 		self.window.login(EMAIL_FOR_LOG_IN, PASSWORD_FOR_LOG_IN)
 
-	@allure.step("verification of authorization")
-	def check_correct_authorization(self):
+	@allure.step("Verification of authorization")
+	def check_authorization(self):
 		"""
 		Verification of authorization
 		:return:
@@ -50,36 +51,31 @@ class SendMailTest(unittest.TestCase):
 				self.assertIn(check_item, page_source)
 		self.assertTrue('Gmail' in self.window.get_title())
 
-	@allure.step("Determination of the numbers of mails")
-	def determine_numbers_mails(self):
+	@allure.step("Determination of the number of mails")
+	def determine_number_of_mails(self) -> int:
 		"""
-		Determination of the numbers of mails
+		Determination of the number of mails
 		:return:
 		"""
-		amount_mail = self.window.get_amount_mail()
+		number_of_mails = self.window.determine_number_of_mails()
 		if EXPECTED_AMOUNT_MAIL:
-			self.assertEqual(EXPECTED_AMOUNT_MAIL, amount_mail)
-		self.assertEqual(type(amount_mail), int)
-		return amount_mail
+			self.assertEqual(EXPECTED_AMOUNT_MAIL, number_of_mails)
+		self.assertEqual(type(number_of_mails), int)
+		return number_of_mails
 
 	@allure.step("Writing and sending mail")
-	def write_and_send_mail(self, amount_mail):
+	def write_and_send_mail(self, number_of_mails: int):
 		"""
 		Writing and sending mail
-		:param amount_mail:
+		:param number_of_mails:
 		:return:
 		"""
-		self.window.send_mail(amount_mail)
+		self.window.send_mail(number_of_mails)
 
+	@allure.step("Webdriver close")
 	def tearDown(self):
-		with allure.step("Webdriver close"):
-			self.window.close_site()
+		self.window.close_site()
 
 
 if __name__ == "__main__":
-	if sys.argv:
-		BasePage.capabilities = {
-			"browserName": sys.argv[1],
-			"platform": sys.argv[2],
-		}
 	unittest.main()

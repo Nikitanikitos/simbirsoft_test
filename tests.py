@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import sys
+
+from base_page import BasePage
+
 try:
-	from settings import EMAIL_FOR_LOG_IN, PASSWORD_FOR_LOG_IN, EXPECTED_AMOUNT_MAIL
+	from settings import EMAIL_FOR_LOG_IN, PASSWORD_FOR_LOG_IN, EXPECTED_NUMBERS_OF_MAIL
 except ImportError:
 	exit("Do copy settings.py.default in settings.py and set values")
 
@@ -54,12 +58,13 @@ class GMailTest(unittest.TestCase):
 	@allure.step("Determination of the number of mails")
 	def determine_number_of_mails(self) -> int:
 		"""
-		Determination of the number of mails
+		Determination of the number of mails.
+		If the expected value is known, an equality check is performed with it
 		:return:
 		"""
 		number_of_mails = self.window.determine_number_of_mails()
-		if EXPECTED_AMOUNT_MAIL:
-			self.assertEqual(EXPECTED_AMOUNT_MAIL, number_of_mails)
+		if EXPECTED_NUMBERS_OF_MAIL:
+			self.assertEqual(EXPECTED_NUMBERS_OF_MAIL, number_of_mails)
 		self.assertEqual(type(number_of_mails), int)
 		return number_of_mails
 
@@ -78,4 +83,9 @@ class GMailTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
+	if len(sys.argv) == 3:
+		BasePage.capabilities['browserName'] = sys.argv[1]
+		BasePage.capabilities['platform'] = sys.argv[2]
+		del sys.argv[2]
+		del sys.argv[1]
 	unittest.main()

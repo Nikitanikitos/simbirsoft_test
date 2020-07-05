@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+from time import sleep
+
+from selenium.webdriver.common.keys import Keys
+
 from base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -22,11 +26,11 @@ class GMailPage(BasePage):
 		self.go_to_site(
 			'https://stackoverflow.com/users/signup?ssrc=head&returnurl=%2fusers%2fstory%2fcurrent%27')
 		self.click_on_element(By.CLASS_NAME, 's-btn__google')
-		self.enter_data(By.NAME, 'identifier', mail)
-		self.click_on_element(By.ID, 'identifierNext')
-		self.enter_data(By.NAME, 'password', password)
-		self.click_on_element(By.ID, 'passwordNext')
-		self.wait.until(ec.title_contains('Stack Overflow'))
+		mail_element = self.enter_data(By.NAME, 'identifier', mail)
+		self.press_enter(mail_element)
+		password_element = self.enter_data(By.NAME, 'password', password)
+		self.press_enter(password_element)
+		self.wait.until(ec.url_contains('stackoverflow'))
 
 	def check_correct_login(self) -> tuple:
 		"""
@@ -35,6 +39,7 @@ class GMailPage(BasePage):
 		"""
 		check_list = ('Inbox', 'Sent')
 		self.go_to_site('https://mail.google.com/mail/u/0/#inbox')
+		self.wait.until(ec.url_contains('inbox'))
 		GMailPage.lang = self.get_lang_site()
 		if GMailPage.lang == "ru":
 			check_list = ('Входящие', 'Отправленные')
@@ -46,6 +51,7 @@ class GMailPage(BasePage):
 		:return: amount_mail
 		"""
 		self.go_to_site(f'https://mail.google.com/mail/u/0/#all')
+		self.wait.until(ec.url_contains('#all'))
 		if GMailPage.lang == "ru":
 			self.wait.until(ec.title_contains('Вся почта'))
 		elif GMailPage.lang == "en":
@@ -77,3 +83,9 @@ class GMailPage(BasePage):
 		else:
 			letter.join('писем')
 		return letter
+
+	def get_lang_site(self) -> str:
+		page_source = self.get_page_source()
+		index = page_source.find('lang') + 6
+		lang = page_source[index:index + 2]
+		return lang

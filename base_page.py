@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
@@ -8,12 +10,12 @@ class BasePage:
 	"""
 	Base page class
 	"""
+	capabilities = {"browserName": "chrome", "platform": "linux"}
 
 	def __init__(self):
-		# self.driver = webdriver.Remote(desired_capabilities=CAPABILITIES)
+		# self.driver = webdriver.Remote(desired_capabilities=BasePage.capabilities)
 		self.driver = webdriver.Chrome()
-		self.driver.maximize_window()
-		self.wait = WebDriverWait(self.driver, 10)
+		self.wait = WebDriverWait(self.driver, 15)
 
 	def go_to_site(self, url):
 		self.driver.get(url)
@@ -30,13 +32,11 @@ class BasePage:
 		input.send_keys(data)
 		return input
 
+	def press_enter(self, element):
+		element.send_keys(Keys.ENTER)
+
 	def get_page_source(self):
 		return self.driver.page_source
-
-	def get_lang_site(self) -> str:
-		page_source = self.driver.page_source
-		lang = page_source[12:14]
-		return lang
 
 	def get_title(self) -> str:
 		return self.driver.title

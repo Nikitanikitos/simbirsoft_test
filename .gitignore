@@ -2,6 +2,8 @@ venv/
 .idea/
 __pycache__/
 selenium/
-reports/
+results/
 .pytest_cache/
 settings.py
+second_var_test.py
+command

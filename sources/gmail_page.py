@@ -2,7 +2,6 @@
 from base_page import BasePage
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-
 from settings import SURNAME, MAIL_RECIPIENT
 
 
@@ -22,10 +21,10 @@ class GMailPage(BasePage):
 		self.go_to_site(
 			'https://stackoverflow.com/users/signup?ssrc=head&returnurl=%2fusers%2fstory%2fcurrent%27')
 		self.click_on_element(By.CLASS_NAME, 's-btn__google')
-		mail_element = self.enter_data(By.NAME, 'identifier', mail)
-		self.press_enter(mail_element)
-		password_element = self.enter_data(By.NAME, 'password', password)
-		self.press_enter(password_element)
+		mail_input = self.enter_data(By.NAME, 'identifier', mail)
+		self.press_enter(mail_input)
+		password_input = self.enter_data(By.NAME, 'password', password)
+		self.press_enter(password_input)
 		self.waiting_desired_url('stackoverflow')
 
 	def check_correct_login(self) -> tuple:

@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sys
-
-from base_page import BasePage
-
 try:
-	from settings import EMAIL_FOR_LOG_IN, PASSWORD_FOR_LOG_IN, EXPECTED_NUMBERS_OF_MAIL
+	from sources.settings import EMAIL_FOR_LOG_IN, PASSWORD_FOR_LOG_IN, EXPECTED_NUMBERS_OF_MAIL
 except ImportError:
 	exit("Do copy settings.py.default in settings.py and set values")
 
-import allure
-from gmail_page import GMailPage
+from sources.gmail_page import GMailPage
+from sources.base_page import BasePage
 import unittest
+import allure
+import sys
 
 
 class GMailTest(unittest.TestCase):

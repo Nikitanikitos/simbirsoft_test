@@ -45,7 +45,7 @@ class GMailPage(BasePage):
 		Функция определяет колличество писем на почте
 		:return: amount_mail
 		"""
-		self.go_to_site(f'https://mail.google.com/mail/u/0/#all')
+		self.go_to_site('https://mail.google.com/mail/u/0/#all')
 		self.waiting_desired_url('all')
 		if GMailPage.lang == "ru":
 			self.wait.until(ec.title_contains('Вся почта'))
@@ -66,16 +66,20 @@ class GMailPage(BasePage):
 		self.enter_data(By.NAME, 'to', MAIL_RECIPIENT)
 		self.enter_data(By.NAME, 'subject', mail_subject)
 		self.enter_data(By.NAME, 'body', mail)
-		# self.click_on_element(By.NAME, 'nvp_bu_send')
+		self.click_on_element(By.NAME, 'nvp_bu_send')
+		if GMailPage.lang == 'ru':
+			self.wait.until(ec.title_contains('Входящие'))
+		else:
+			self.wait.until(ec.title_contains('Inbox'))
 
 	def compose_mail(self, number_of_mails: int) -> str:
 		letter = f"На данной почте всего {number_of_mails} "
 		if number_of_mails == 1:
-			letter.join('письмо')
-		elif 2 <= number_of_mails >= 4:
-			letter.join('письма')
+			letter += 'письмо'
+		elif 2 <= number_of_mails <= 4:
+			letter += 'письма'
 		else:
-			letter.join('писем')
+			letter += 'писем'
 		return letter
 
 	def get_lang_site(self) -> str:

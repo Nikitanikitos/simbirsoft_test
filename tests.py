@@ -74,11 +74,16 @@ class GMailTest(unittest.TestCase):
 	@allure.step("Написание и отправка письма")
 	def write_and_send_mail(self, number_of_mails: int):
 		"""
-		Функция для составления и отправки письма на указанный адрес в settings.py
+		Функция для составления и отправки письма на указанный адрес в settings.py.
+		Проверяем, что письмо отпрвленно
 		:param number_of_mails:
 		:return:
 		"""
 		self.window.send_mail(number_of_mails)
+		if GMailPage.lang == "ru":
+			self.assertTrue('Письмо отправлено.' in self.window.driver.page_source)
+		else:
+			self.assertTrue('Mail send.' in self.window.driver.page_source)
 
 	@allure.step("Закрытие webdriver")
 	def tearDown(self):
@@ -87,9 +92,6 @@ class GMailTest(unittest.TestCase):
 
 if __name__ == "__main__":
 	if len(sys.argv) == 3:
-		BasePage.capabilities['browserName'] = sys.argv[1]
-		BasePage.capabilities['platform'] = sys.argv[2]
-		for q in range(2):
-			sys.argv.pop()
-	# GMailTest.run()
+		BasePage.capabilities['platform'] = sys.argv.pop()
+		BasePage.capabilities['browserName'] = sys.argv.pop()
 	unittest.main()

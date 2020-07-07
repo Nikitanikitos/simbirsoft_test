@@ -12,8 +12,7 @@ class BasePage:
 	capabilities = {"browserName": "chrome", "platform": "linux"}
 
 	def __init__(self):
-		# self.driver = webdriver.Remote(desired_capabilities=BasePage.capabilities)
-		self.driver = webdriver.Firefox()
+		self.driver = webdriver.Remote(desired_capabilities=BasePage.capabilities)
 		self.wait = WebDriverWait(self.driver, 20)
 
 	def go_to_site(self, url):
